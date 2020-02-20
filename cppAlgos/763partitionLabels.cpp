@@ -18,12 +18,45 @@ S will have length in range [1, 500].
 S will consist of lowercase letters ('a' to 'z') only.
 
 solution:
+O(nlogn) solution:
 iterate over vector and get intervals for each character
 we can use an unordered_map of pairs to represent the interval
 
-merge intervals using the minHeap
+merge intervals
 
+O(n) solution:
+
+we iterate over s, but this time just keep track of rightmost index for each character
+
+we iterate over s again, but this time we know what the right most bound for each S[left:i] so
+we push into results when i == rightmostbound
 */
+class Solution {
+public:
+    vector<int> partitionLabels(string S) {
+        int map[26];  // here you can also use a map
+        vector<int> res;
+        //let map store the right most index for each character encountered in string
+        //so for a the rightmost is index 8
+        for(int i=0; i<S.size(); ++i){
+            map[S[i]-'a']=i;
+        }
+        int left=0;
+        int right=0;
+        for(int i=0 ; i<S.size(); ++i){
+            //as we iterate over S again we can check if the current index is equal to the rightmost index that has the rightmost occurrence later in the string 
+            //so we know that that rightmost index bounds the current partition
+            right=max(right,map[S[i]-'a']);
+            if(i==right){
+                res.push_back(i-left+1);
+                left=i+1;
+            }
+        }
+        return res;
+    }
+};
+/*
+//nlogn solution since I used a minheap
 class Solution {
 public:
     struct CompareIntervals {
@@ -77,3 +110,4 @@ public:
         return res;
     }
 };
+*/
